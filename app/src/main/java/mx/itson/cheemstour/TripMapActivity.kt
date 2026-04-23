@@ -9,6 +9,9 @@ import androidx.core.view.WindowInsetsCompat
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import mx.itson.cheemstour.entities.Trip
 import mx.itson.cheemstour.utis.RetrofitUtil
 import retrofit2.Call
@@ -30,7 +33,6 @@ class TripMapActivity : AppCompatActivity(), OnMapReadyCallback {
         }
         var mapFragment = supportFragmentManager.findFragmentById(R.id.maps) as SupportMapFragment
         mapFragment.getMapAsync(this)
-        getTrips()
 
     }
 
@@ -41,10 +43,18 @@ class TripMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
             override fun onResponse(call: Call<List<Trip>?>, response: Response<List<Trip>>) {
                 val trips : List<Trip> = response.body()!!
-                for(t in trips) {
-                }
+                trips.forEach { t ->
+                    val latLng = LatLng(t.latitude!!, t.longitude!!)
 
+                    map?.addMarker(MarkerOptions()
+                        .position(latLng)
+                        .title(t.name)
+                        .icon(BitmapDescriptorFactory
+                        .fromResource(R.drawable.cheemsito)))
+                }
             }
+
+
 
             override fun onFailure(call: Call<List<Trip>>, t: Throwable) {
                 Log.e("Error calling API", "Error: ${t.message}")
@@ -52,10 +62,13 @@ class TripMapActivity : AppCompatActivity(), OnMapReadyCallback {
         })
     }
 
+
     override fun onMapReady(googleMap: GoogleMap) {
         try {
             map = googleMap
-            map.mapType =
+            map!!.mapType = GoogleMap.MAP_TYPE_NORMAL
+
+            getTrips()
         }catch (ex: Exception){
             Log.e("Error loading map", ex.toString())
         }
