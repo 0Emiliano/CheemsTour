@@ -31,7 +31,7 @@ class TripMapActivity : AppCompatActivity(), OnMapReadyCallback {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        var mapFragment = supportFragmentManager.findFragmentById(R.id.maps) as SupportMapFragment
+        val mapFragment = supportFragmentManager.findFragmentById(R.id.maps) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
     }
@@ -41,9 +41,9 @@ class TripMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
         call.enqueue(object : Callback<List<Trip>> {
 
-            override fun onResponse(call: Call<List<Trip>?>, response: Response<List<Trip>>) {
-                val trips : List<Trip> = response.body()!!
-                trips.forEach { t ->
+            override fun onResponse(call: Call<List<Trip>>, response: Response<List<Trip>>) {
+                val trips = response.body()
+                trips?.forEach { t ->
                     val latLng = LatLng(t.latitude!!, t.longitude!!)
 
                     map?.addMarker(MarkerOptions()
@@ -51,9 +51,9 @@ class TripMapActivity : AppCompatActivity(), OnMapReadyCallback {
                         .title(t.name)
                         .icon(BitmapDescriptorFactory
                         .fromResource(R.drawable.cheemsito)))
+
                 }
             }
-
 
 
             override fun onFailure(call: Call<List<Trip>>, t: Throwable) {

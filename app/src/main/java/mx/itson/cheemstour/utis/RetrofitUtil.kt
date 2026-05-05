@@ -9,7 +9,7 @@ class RetrofitUtil {
 
     fun getApi() : CheemsAPI {
         val gson = GsonBuilder().create()
-        val retrofit = Retrofit.Builder().baseUrl("http://10.232.12.104:5000/")
+        val retrofit = Retrofit.Builder().baseUrl("http://10.232.19.141:5000/")
             .addConverterFactory(GsonConverterFactory.create(gson)).build()
 
         return retrofit.create(CheemsAPI::class.java)
